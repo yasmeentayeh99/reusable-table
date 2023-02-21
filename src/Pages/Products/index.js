@@ -2,11 +2,16 @@ import {Table} from "../../Component/Table";
 import {data} from "../Data";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {Search} from "../../Component/Search";
 
 export const Products = () => {
     const [data , setData] = useState(null)
     const [loading , setLoading] = useState(true)
     const [error , setError] = useState(null)
+    const [query , setQuery ] = useState("")
+    // const [searchParam] = useState()
+
+    console.log(data?.products.filter(product => product.brand.toLowerCase().includes("fa")))
 
     useEffect(() => {
         getData();
@@ -40,7 +45,12 @@ export const Products = () => {
 
     return(
         <>
-            <Table  data={getData} columns={columns} />
+            <Search type="text" placeholder="name" onChange={(e)=> setQuery(e.target.value)} />
+            {data?.products.filter((product) =>
+                product.brand.toLowerCase().includes(query)
+
+            <Table key={data?.products.id} data={data?.products} columns={columns} />
+                ))}
         </>
     )
 }
