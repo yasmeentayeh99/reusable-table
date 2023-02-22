@@ -33,7 +33,7 @@ export const Users = () => {
     }
 
     const columns = [
-        {field : "id" , header: "ID"},
+        // {field : "id" , header: "ID"},
         {field: "firstName" , header: "firstName"},
         {field: "lastName" , header:"lastName"},
         {field: "maidenName" , header: "maidenName"},

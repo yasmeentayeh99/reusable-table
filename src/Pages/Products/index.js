@@ -6,21 +6,20 @@ import {Search} from "../../Component/Search";
 import {FilterProduct} from "../../Component/FilterProduct";
 
 export const Products = () => {
-    const products = data?.products ;
+    // const products = data?.products ;
 
     const [data , setData] = useState(null)
     const [loading , setLoading] = useState(true)
     const [error , setError] = useState(null)
     const [query , setQuery ] = useState("")
-    const [filterTextValue , setFilterText] = useState("all")
-    const [newProductList , setNewProduct] = useState(products)
-    // console.log(data?.products.filter(product => product.brand.toLowerCase().includes("fa")))
-
+    const [filteredData, setFilteredData] = useState([]);
+    const [selectedField, setSelectedField] = useState('name');
+    const [filterParam, setFilterParam] = useState(["title"]);
+    const [searchParam] = useState(["title", "brand"]);
 
     useEffect(() => {
         getData();
     }, [])
-
 
      const getData = () => {
         axios(
@@ -45,18 +44,33 @@ export const Products = () => {
          keys.some((key) => item[key].toLowerCase().includes(query))
         )
     }
-
-    const FilterProductList = newProductList.filter((product) => {
-        if (filterTextValue === 'laptop') {
-            return product.category === true
-        } else {
-            return product
-        }
-
-    })
-    const onFilterValueSelected = (filterValue) => {
-        setFilterText(filterValue)
+    const Filterd = () => {
+        return data?.products.filter((item) => {
+            console.log(filterParam , item)
+            if (item.brand === filterParam) {
+                return searchParam.some((newItem) => {
+                    return (
+                        item[newItem]
+                            .toString()
+                            .toLowerCase()
+                            .indexOf(query.toLowerCase()) > -1
+                    );
+                })
+            } else if (filterParam === "title") {
+                return searchParam.some((newItem) => {
+                    return (
+                        item[newItem]
+                            .toString()
+                            .toLowerCase()
+                            .indexOf(query.toLowerCase()) > -1
+                    );
+                });
+            }
+        } )
     }
+
+    const onChangeFilter = (e) => {
+       return Filterd(e.target.value)}
 
 
     const columns = [
@@ -69,7 +83,10 @@ export const Products = () => {
 
     return(
         <>
-            <FilterProduct filterValueSelected={onFilterValueSelected} newProductList={FilterProductList}></FilterProduct>
+            <select onChange={Filterd}>
+            <option value="title">Title</option>
+            <option value="brand">Brand</option>
+            </select>
             <Search type="text" placeholder="name" onChange={(e)=> setQuery(e.target.value)} />
             <Table key={data?.products.id} data={search(data?.products)} columns={columns} />
         </>
